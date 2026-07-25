@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Orbital Satellite Tracker</title>
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+>
+
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #07111f;
+    color: #eef6ff;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+}
+
+
+/* ==============================
+   ヘッダー
+   ============================== */
+
+.header {
+    padding: 18px 16px 14px;
+    background: #0a192b;
+    border-bottom: 1px solid #29435e;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 800;
+}
+
+.subtitle {
+    margin-top: 4px;
+    color: #8db8dd;
+    font-size: 13px;
+}
+
+
+/* ==============================
+   検索
+   ============================== */
+
+.search-area {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+#searchInput {
+    flex: 1;
+    min-width: 0;
+
+    padding: 12px;
+
+    border: 1px solid #45647f;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #111;
+
+    font-size: 17px;
+}
+
+#searchButton {
+    border: 0;
+    border-radius: 10px;
+
+    padding: 0 18px;
+
+    background: #2278e5;
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+}
+
+#searchStatus {
+    margin-top: 9px;
+    min-height: 20px;
+
+    font-size: 14px;
+    color: #89d7ff;
+}
+
+
+/* ==============================
+   衛星情報
+   ============================== */
+
+.info-card {
+    margin: 12px;
+
+    padding: 14px;
+
+    background: #0d2035;
+
+    border: 1px solid #284b68;
+    border-radius: 14px;
+}
+
+.sat-name {
+    font-size: 21px;
+    font-weight: 800;
+
+    margin-bottom: 8px;
+}
+
+.info-grid {
+    display: grid;
+
+    grid-template-columns:
+        105px 1fr;
+
+    gap: 5px 8px;
+
+    font-size: 14px;
+}
+
+.label {
+    color: #91b7d5;
+}
+
+.value {
+    font-weight: 600;
+}
+
+
+/* ==============================
+   上り / 下り
+   ============================== */
+
+.direction {
+    margin-top: 10px;
+
+    display: inline-block;
+
+    padding: 5px 10px;
+
+    border-radius: 14px;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.ascending {
+    background: #155fa0;
+}
+
+.descending {
+    background: #b35b11;
+}
+
+
+/* ==============================
+   MAP
+   ============================== */
+
+#map {
+    height: 52vh;
+    min-height: 430px;
+
+    margin: 0 12px;
+
+    border: 1px solid #335c7b;
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+
+/* ==============================
+   時間スライダー
+   ============================== */
+
+.timeline {
+    margin: 12px;
+
+    padding: 14px;
+
+    background: #0d2035;
+
+    border: 1px solid #284b68;
+    border-radius: 14px;
+}
+
+.time-title {
+    font-size: 14px;
+    color: #91b7d5;
+
+    margin-bottom: 8px;
+}
+
+#timeDisplay {
+    text-align: center;
+
+    font-size: 17px;
+    font-weight: 700;
+
+    margin-bottom: 9px;
+}
+
+#timeSlider {
+    width: 100%;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 4px;
+
+    font-size: 12px;
+    color: #789ab5;
+}
+
+
+/* ==============================
+   軌跡凡例
+   ============================== */
+
+.legend-line {
+    display: flex;
+    gap: 18px;
+
+    justify-content: center;
+
+    margin-top: 10px;
+
+    font-size: 13px;
+}
+
+.blue {
+    color: #4aa3ff;
+}
+
+.orange {
+    color: #ff9b42;
+}
+
+
+/* ==============================
+   エラー
+   ============================== */
+
+.error {
+    color: #ff7777 !important;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <div class="title">
+        🛰 ORBITAL SATELLITE TRACKER
+    </div>
+
+    <div class="subtitle">
+        NORAD ID / 衛星名から現在位置と軌道を表示
+    </div>
+
+
+    <div class="search-area">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="例：25544 / ISS"
+            autocomplete="off"
+        >
+
+        <button id="searchButton">
+            🔍
+        </button>
+
+    </div>
+
+
+    <div id="searchStatus">
+        NORAD ID または衛星名を入力
+    </div>
+
+</div>
+
+
+
+<div class="info-card">
+
+    <div
+        class="sat-name"
+        id="satName"
+    >
+        衛星を検索してください
+    </div>
+
+
+    <div class="info-grid">
+
+        <div class="label">
+            NORAD
+        </div>
+
+        <div
+            class="value"
+            id="norad"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            時刻
+        </div>
+
+        <div
+            class="value"
+            id="displayTime"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            緯度
+        </div>
+
+        <div
+            class="value"
+            id="latitude"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            経度
+        </div>
+
+        <div
+            class="value"
+            id="longitude"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            高度
+        </div>
+
+        <div
+            class="value"
+            id="altitude"
+        >
+            -
+        </div>
+
+    </div>
+
+
+    <div
+        id="direction"
+        class="direction"
+        style="display:none;"
+    >
+    </div>
+
+</div>
+
+
+
+<div id="map"></div>
+
+
+
+<div class="timeline">
+
+    <div class="time-title">
+        時刻をスライド
+    </div>
+
+    <div id="timeDisplay">
+        現在
+    </div>
+
+
+    <input
+        id="timeSlider"
+        type="range"
+        min="-60"
+        max="180"
+        value="0"
+        step="1"
+        disabled
+    >
+
+
+    <div class="slider-labels">
+
+        <span>
+            -60分
+        </span>
+
+        <span>
+            現在
+        </span>
+
+        <span>
+            +180分
+        </span>
+
+    </div>
+
+
+    <div class="legend-line">
+
+        <span class="blue">
+            ● 上りパス
+        </span>
+
+        <span class="orange">
+            ● 下りパス
+        </span>
+
+    </div>
+
+</div>
+
+
+
+<script type="module">
+
+import * as satellite
+from "https://cdn.jsdelivr.net/npm/satellite.js@7.0.1/+esm";
+
+
+/* =========================================================
+   MAP
+   ========================================================= */
+
+const map =
+    L.map(
+        "map",
+        {
+            worldCopyJump: true
+        }
+    ).setView(
+        [20, 135],
+        2
+    );
+
+
+L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+        maxZoom: 8,
+        attribution: "OpenStreetMap"
+    }
+).addTo(map);
+
+
+
+/* =========================================================
+   状態
+   ========================================================= */
+
+let currentSatrec = null;
+let currentOmm = null;
+
+let baseTime = null;
+
+let satelliteMarker = null;
+
+let ascendingLines = [];
+let descendingLines = [];
+
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
+
+const searchButton =
+    document.getElementById(
+        "searchButton"
+    );
+
+const searchStatus =
+    document.getElementById(
+        "searchStatus"
+    );
+
+const slider =
+    document.getElementById(
+        "timeSlider"
+    );
+
+
+
+/* =========================================================
+   日時
+   ========================================================= */
+
+function formatJST(date) {
+
+    return new Intl.DateTimeFormat(
+        "ja-JP",
+        {
+            timeZone:
+                "Asia/Tokyo",
+
+            year:
+                "numeric",
+
+            month:
+                "2-digit",
+
+            day:
+                "2-digit",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            second:
+                "2-digit",
+
+            hour12:
+                false
+        }
+    ).format(date)
+    + " JST";
+}
+
+
+
+/* =========================================================
+   OMM → 指定時刻の位置
+   ========================================================= */
+
+function positionAt(date) {
+
+    if (!currentSatrec) {
+        return null;
+    }
+
+
+    const propagated =
+        satellite.propagate(
+            currentSatrec,
+            date
+        );
+
+
+    if (
+        !propagated ||
+        !propagated.position
+    ) {
+        return null;
+    }
+
+
+    const gmst =
+        satellite.gstime(
+            date
+        );
+
+
+    const gd =
+        satellite.eciToGeodetic(
+            propagated.position,
+            gmst
+        );
+
+
+    const lat =
+        satellite.degreesLat(
+            gd.latitude
+        );
+
+
+    const lon =
+        satellite.degreesLong(
+            gd.longitude
+        );
+
+
+    return {
+
+        lat:
+            lat,
+
+        lon:
+            lon,
+
+        alt:
+            gd.height
+    };
+}
+
+
+
+/* =========================================================
+   上り / 下り判定
+
+   数秒前と数秒後の緯度を比較
+   ========================================================= */
+
+function directionAt(date) {
+
+    const before =
+        positionAt(
+            new Date(
+                date.getTime()
+                - 10000
+            )
+        );
+
+
+    const after =
+        positionAt(
+            new Date(
+                date.getTime()
+                + 10000
+            )
+        );
+
+
+    if (
+        !before ||
+        !after
+    ) {
+        return null;
+    }
+
+
+    return (
+        after.lat >
+        before.lat
+    )
+        ? "ascending"
+        : "descending";
+}
+
+
+
+/* =========================================================
+   マーカー
+   ========================================================= */
+
+function updateMarker(date) {
+
+    const p =
+        positionAt(
+            date
+        );
+
+
+    if (!p) {
+        return;
+    }
+
+
+    const direction =
+        directionAt(
+            date
+        );
+
+
+    const color =
+        direction === "ascending"
+            ? "#1976d2"
+            : "#ef7d00";
+
+
+    if (!satelliteMarker) {
+
+        satelliteMarker =
+            L.circleMarker(
+                [
+                    p.lat,
+                    p.lon
+                ],
+                {
+                    radius:
+                        10,
+
+                    color:
+                        "#ffffff",
+
+                    weight:
+                        2,
+
+                    fillColor:
+                        color,
+
+                    fillOpacity:
+                        1
+                }
+            )
+            .addTo(map);
+    }
+
+    else {
+
+        satelliteMarker.setLatLng(
+            [
+                p.lat,
+                p.lon
+            ]
+        );
+
+
+        satelliteMarker.setStyle({
+            fillColor:
+                color
+        });
+    }
+
+
+    document
+        .getElementById(
+            "displayTime"
+        )
+        .textContent =
+            formatJST(
+                date
+            );
+
+
+    document
+        .getElementById(
+            "latitude"
+        )
+        .textContent =
+            p.lat.toFixed(4)
+            + "°";
+
+
+    document
+        .getElementById(
+            "longitude"
+        )
+        .textContent =
+            p.lon.toFixed(4)
+            + "°";
+
+
+    document
+        .getElementById(
+            "altitude"
+        )
+        .textContent =
+            p.alt.toFixed(1)
+            + " km";
+
+
+    const directionBox =
+        document.getElementById(
+            "direction"
+        );
+
+
+    directionBox.style.display =
+        "inline-block";
+
+
+    if (
+        direction ===
+        "ascending"
+    ) {
+
+        directionBox.className =
+            "direction ascending";
+
+        directionBox.textContent =
+            "🔵 上りパス";
+    }
+
+    else {
+
+        directionBox.className =
+            "direction descending";
+
+        directionBox.textContent =
+            "🟠 下りパス";
+    }
+}
+
+
+
+/* =========================================================
+   軌跡削除
+   ========================================================= */
+
+function clearTrack() {
+
+    ascendingLines.forEach(
+        line =>
+            map.removeLayer(line)
+    );
+
+    descendingLines.forEach(
+        line =>
+            map.removeLayer(line)
+    );
+
+
+    ascendingLines = [];
+    descendingLines = [];
+}
+
+
+
+/* =========================================================
+   軌跡生成
+
+   -60分 ～ +180分
+   2分間隔
+
+   上りと下りを色分け
+   ========================================================= */
+
+function drawTrack() {
+
+    clearTrack();
+
+
+    if (
+        !currentSatrec ||
+        !baseTime
+    ) {
+        return;
+    }
+
+
+    let previous = null;
+
+
+    for (
+        let minute = -60;
+        minute <= 180;
+        minute += 2
+    ) {
+
+        const date =
+            new Date(
+                baseTime.getTime()
+                +
+                minute *
+                60000
+            );
+
+
+        const p =
+            positionAt(
+                date
+            );
+
+
+        if (!p) {
+            continue;
+        }
+
+
+        const direction =
+            directionAt(
+                date
+            );
+
+
+        if (previous) {
+
+            /*
+             * 日付変更線を跨いだ場合は
+             * 地図を横断する線を引かない
+             */
+            const lonDiff =
+                Math.abs(
+                    p.lon -
+                    previous.lon
+                );
+
+
+            if (
+                lonDiff <
+                180
+            ) {
+
+                const line =
+                    L.polyline(
+                        [
+                            [
+                                previous.lat,
+                                previous.lon
+                            ],
+
+                            [
+                                p.lat,
+                                p.lon
+                            ]
+                        ],
+                        {
+                            color:
+                                direction ===
+                                "ascending"
+                                    ? "#278cff"
+                                    : "#ff8a22",
+
+                            weight:
+                                3,
+
+                            opacity:
+                                0.85
+                        }
+                    )
+                    .addTo(map);
+
+
+                if (
+                    direction ===
+                    "ascending"
+                ) {
+
+                    ascendingLines.push(
+                        line
+                    );
+                }
+
+                else {
+
+                    descendingLines.push(
+                        line
+                    );
+                }
+            }
+        }
+
+
+        previous = p;
+    }
+}
+
+
+
+/* =========================================================
+   検索文字正規化
+   ========================================================= */
+
+function normalizeName(value) {
+
+    return String(
+        value || ""
+    )
+    .toUpperCase()
+    .replace(
+        /[^A-Z0-9]/g,
+        ""
+    );
+}
+
+
+
+/* =========================================================
+   衛星検索
+   ========================================================= */
+
+async function searchSatellite() {
+
+    const query =
+        searchInput
+            .value
+            .trim();
+
+
+    if (!query) {
+
+        searchStatus.textContent =
+            "衛星名かNORAD IDを入力してください";
+
+        return;
+    }
+
+
+    searchStatus.classList.remove(
+        "error"
+    );
+
+
+    searchStatus.textContent =
+        "🔄 CelesTrakを検索中…";
+
+
+    searchButton.disabled =
+        true;
+
+
+    try {
+
+        const numeric =
+            /^[0-9]+$/.test(
+                query
+            );
+
+
+        const key =
+            numeric
+                ? "CATNR"
+                : "NAME";
+
+
+        const url =
+            "https://celestrak.org/NORAD/elements/gp.php?"
+            +
+            key
+            +
+            "="
+            +
+            encodeURIComponent(
+                query
+            )
+            +
+            "&FORMAT=JSON";
+
+
+        const response =
+            await fetch(
+                url,
+                {
+                    cache:
+                        "no-store"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP "
+                +
+                response.status
+            );
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            throw new Error(
+                "該当衛星なし"
+            );
+        }
+
+
+        /*
+         * 名前検索で複数候補が出た場合、
+         * 完全一致を優先
+         */
+        let omm =
+            data[0];
+
+
+        if (!numeric) {
+
+            const q =
+                normalizeName(
+                    query
+                );
+
+
+            const exact =
+                data.find(
+                    item =>
+                        normalizeName(
+                            item.OBJECT_NAME
+                        )
+                        === q
+                );
+
+
+            if (exact) {
+                omm = exact;
+            }
+        }
+
+
+        currentOmm =
+            omm;
+
+
+        /*
+         * OMM JSONからSGP4用satrec生成
+         */
+        currentSatrec =
+            satellite.json2satrec(
+                omm
+            );
+
+
+        baseTime =
+            new Date();
+
+
+        slider.value =
+            "0";
+
+        slider.disabled =
+            false;
+
+
+        document
+            .getElementById(
+                "satName"
+            )
+            .textContent =
+                omm.OBJECT_NAME
+                || "UNKNOWN";
+
+
+        document
+            .getElementById(
+                "norad"
+            )
+            .textContent =
+                String(
+                    omm.NORAD_CAT_ID
+                    || "-"
+                );
+
+
+        drawTrack();
+
+
+        updateMarker(
+            baseTime
+        );
+
+
+        const p =
+            positionAt(
+                baseTime
+            );
+
+
+        if (p) {
+
+            map.setView(
+                [
+                    p.lat,
+                    p.lon
+                ],
+                4,
+                {
+                    animate:
+                        true
+                }
+            );
+        }
+
+
+        if (
+            data.length >
+            1
+        ) {
+
+            searchStatus.textContent =
+                "✅ "
+                +
+                omm.OBJECT_NAME
+                +
+                " / NORAD "
+                +
+                omm.NORAD_CAT_ID
+                +
+                "（候補 "
+                +
+                data.length
+                +
+                "件）";
+        }
+
+        else {
+
+            searchStatus.textContent =
+                "✅ "
+                +
+                omm.OBJECT_NAME
+                +
+                " / NORAD "
+                +
+                omm.NORAD_CAT_ID;
+        }
+    }
+
+
+    catch (error) {
+
+        console.error(
+            error
+        );
+
+
+        searchStatus.classList.add(
+            "error"
+        );
+
+
+        searchStatus.textContent =
+            "❌ 衛星データを取得できませんでした";
+    }
+
+
+    finally {
+
+        searchButton.disabled =
+            false;
+    }
+}
+
+
+
+/* =========================================================
+   時間スライダー
+   ========================================================= */
+
+slider.addEventListener(
+    "input",
+
+    function() {
+
+        if (!baseTime) {
+            return;
+        }
+
+
+        const minutes =
+            Number(
+                slider.value
+            );
+
+
+        const date =
+            new Date(
+                baseTime.getTime()
+                +
+                minutes *
+                60000
+            );
+
+
+        if (minutes === 0) {
+
+            document
+                .getElementById(
+                    "timeDisplay"
+                )
+                .textContent =
+                    "現在";
+        }
+
+        else if (
+            minutes > 0
+        ) {
+
+            document
+                .getElementById(
+                    "timeDisplay"
+                )
+                .textContent =
+                    "+"
+                    +
+                    minutes
+                    +
+                    "分";
+        }
+
+        else {
+
+            document
+                .getElementById(
+                    "timeDisplay"
+                )
+                .textContent =
+                    minutes
+                    +
+                    "分";
+        }
+
+
+        updateMarker(
+            date
+        );
+    }
+);
+
+
+
+/* =========================================================
+   検索ボタン
+   ========================================================= */
+
+searchButton.addEventListener(
+    "click",
+    searchSatellite
+);
+
+
+
+/* =========================================================
+   Enter検索
+   ========================================================= */
+
+searchInput.addEventListener(
+    "keydown",
+
+    function(event) {
+
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+            event.preventDefault();
+
+            searchSatellite();
+        }
+    }
+);
+
+
+/* =========================================================
+   初期テスト用
+   ISSを自動入力
+   ========================================================= */
+
+searchInput.value =
+    "25544";
+
+</script>
+
+
+</body>
+</html>
