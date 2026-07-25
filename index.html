@@ -2,393 +2,433 @@
 <html lang="ja">
 
 <head>
+
 <meta charset="UTF-8">
 
 <meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
 >
 
 <title>Orbital Satellite Tracker</title>
 
 <link
-  rel="stylesheet"
-  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
 >
 
 <script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
 </script>
+
 
 <style>
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
+
 
 html,
 body {
-  margin: 0;
-  padding: 0;
+    margin: 0;
+    padding: 0;
 
-  background: #07111f;
-  color: #eef6ff;
+    background: #07111f;
+    color: #eef6ff;
 
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
 
-/* ==========================================
+/* =========================================================
    HEADER
-   ========================================== */
+   ========================================================= */
 
 .header {
-  padding: 16px;
+    padding: 16px;
 
-  background: #0a192b;
+    background: #0a192b;
 
-  border-bottom:
-    1px solid #29435e;
+    border-bottom:
+        1px solid #29435e;
 }
+
 
 .title {
-  font-size: 23px;
-  font-weight: 800;
+    font-size: 23px;
+    font-weight: 800;
 }
+
 
 .subtitle {
-  margin-top: 5px;
+    margin-top: 5px;
 
-  color: #8db8dd;
+    color: #8db8dd;
 
-  font-size: 13px;
+    font-size: 13px;
 }
 
 
-/* ==========================================
+/* =========================================================
    SEARCH
-   ========================================== */
+   ========================================================= */
 
 .search-area {
-  display: flex;
+    display: flex;
 
-  gap: 8px;
+    gap: 8px;
 
-  margin-top: 14px;
+    margin-top: 14px;
 }
+
 
 #searchInput {
-  flex: 1;
+    flex: 1;
 
-  min-width: 0;
+    min-width: 0;
 
-  padding: 12px;
+    padding: 12px;
 
-  border:
-    1px solid #45647f;
+    border:
+        1px solid #45647f;
 
-  border-radius: 10px;
+    border-radius: 10px;
 
-  background: white;
-  color: #111;
+    background: white;
 
-  font-size: 17px;
+    color: #111;
+
+    font-size: 17px;
 }
+
 
 #searchButton {
-  width: 68px;
+    width: 68px;
 
-  border: 0;
+    border: 0;
 
-  border-radius: 10px;
+    border-radius: 10px;
 
-  background: #2278e5;
-  color: white;
+    background: #2278e5;
 
-  font-size: 22px;
-  font-weight: bold;
+    color: white;
 
-  cursor: pointer;
+    font-size: 22px;
+
+    font-weight: bold;
 }
+
 
 #searchButton:disabled {
-  opacity: 0.5;
+    opacity: 0.5;
 }
+
 
 #searchStatus {
-  min-height: 21px;
+    min-height: 21px;
 
-  margin-top: 9px;
+    margin-top: 9px;
 
-  color: #89d7ff;
+    color: #89d7ff;
 
-  font-size: 14px;
-  font-weight: 600;
+    font-size: 14px;
+
+    font-weight: 600;
 }
+
 
 .error {
-  color: #ff7474 !important;
+    color: #ff7474 !important;
 }
 
 
-/* ==========================================
-   SATELLITE INFO
-   ========================================== */
+/* =========================================================
+   INFO
+   ========================================================= */
 
 .info-card {
-  margin: 12px;
+    margin: 12px;
 
-  padding: 14px;
+    padding: 14px;
 
-  background: #0d2035;
+    background: #0d2035;
 
-  border:
-    1px solid #284b68;
+    border:
+        1px solid #284b68;
 
-  border-radius: 14px;
+    border-radius: 14px;
 }
+
 
 #satName {
-  margin-bottom: 10px;
+    margin-bottom: 10px;
 
-  font-size: 21px;
-  font-weight: 800;
+    font-size: 21px;
+
+    font-weight: 800;
 }
+
 
 .info-grid {
-  display: grid;
+    display: grid;
 
-  grid-template-columns:
-    105px 1fr;
+    grid-template-columns:
+        105px 1fr;
 
-  gap: 6px 8px;
+    gap: 6px 8px;
 
-  font-size: 14px;
+    font-size: 14px;
 }
+
 
 .label {
-  color: #91b7d5;
+    color: #91b7d5;
 }
+
 
 .value {
-  font-weight: 600;
+    font-weight: 600;
 
-  word-break: break-word;
+    word-break: break-word;
 }
 
 
-/* ==========================================
+/* =========================================================
    ASCENDING / DESCENDING
-   ========================================== */
+   ========================================================= */
 
 #direction {
-  display: none;
+    display: none;
 
-  margin-top: 12px;
+    margin-top: 12px;
 
-  padding: 6px 11px;
+    padding: 6px 11px;
 
-  border-radius: 16px;
+    border-radius: 16px;
 
-  font-size: 14px;
-  font-weight: 800;
+    font-size: 14px;
+
+    font-weight: 800;
 }
+
 
 .ascending {
-  background: #155fa0;
+    background: #155fa0;
 }
+
 
 .descending {
-  background: #a84e0b;
+    background: #a84e0b;
 }
 
 
-/* ==========================================
+/* =========================================================
    MAP
-   ========================================== */
+   ========================================================= */
 
 #map {
-  height: 58vh;
-
-  min-height: 430px;
-
-  margin:
-    0 12px;
-
-  border:
-    1px solid #335c7b;
-
-  border-radius: 14px;
-
-  overflow: hidden;
-}
-
-
-/* ==========================================
-   TIMELINE
-   ========================================== */
-
-.timeline {
-  margin: 12px;
-
-  padding: 14px;
-
-  background: #0d2035;
-
-  border:
-    1px solid #284b68;
-
-  border-radius: 14px;
-}
-
-.timeline-title {
-  color: #91b7d5;
-
-  font-size: 14px;
-}
-
-.timeline-note {
-  margin-top: 4px;
-
-  color: #6f96b5;
-
-  font-size: 12px;
-}
-
-#selectedTime {
-  margin:
-    10px 0 14px;
-
-  text-align: center;
-
-  color: #ffffff;
-
-  font-size: 21px;
-  font-weight: 800;
-}
-
-#timeSlider {
-  width: 100%;
-}
-
-.slider-labels {
-  display: flex;
-
-  justify-content: space-between;
-
-  gap: 4px;
-
-  margin-top: 7px;
-
-  color: #789ab5;
-
-  font-size: 11px;
-
-  text-align: center;
-}
-
-.slider-labels span {
-  flex: 1;
-}
-
-.track-legend {
-  display: flex;
-
-  justify-content: center;
-
-  gap: 22px;
-
-  margin-top: 14px;
-
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.asc-color {
-  color: #4aa3ff;
-}
-
-.desc-color {
-  color: #ff9b42;
-}
-
-.track-note {
-  margin-top: 8px;
-
-  color: #789ab5;
-
-  text-align: center;
-
-  font-size: 12px;
-}
-
-
-/* ==========================================
-   BUTTON
-   ========================================== */
-
-.timeline-buttons {
-  display: flex;
-
-  justify-content: center;
-
-  margin-top: 14px;
-}
-
-#nowButton {
-  border: 0;
-
-  border-radius: 9px;
-
-  padding:
-    10px 18px;
-
-  background: #1f6fc5;
-  color: white;
-
-  font-size: 14px;
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-#nowButton:disabled {
-  opacity: 0.5;
-}
-
-
-/* ==========================================
-   MOBILE
-   ========================================== */
-
-@media (max-width: 600px) {
-
-  .title {
-    font-size: 20px;
-  }
-
-  #map {
-    height: 62vh;
+    height: 58vh;
 
     min-height: 430px;
-  }
 
-  .info-grid {
-    grid-template-columns:
-      96px 1fr;
-  }
+    margin:
+        0 12px;
 
-  #selectedTime {
-    font-size: 19px;
-  }
+    border:
+        1px solid #335c7b;
 
-  .slider-labels {
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+
+.timeline {
+    margin: 12px;
+
+    padding: 14px;
+
+    background: #0d2035;
+
+    border:
+        1px solid #284b68;
+
+    border-radius: 14px;
+}
+
+
+.timeline-title {
+    color: #91b7d5;
+
+    font-size: 14px;
+}
+
+
+.timeline-note {
+    margin-top: 4px;
+
+    color: #6f96b5;
+
+    font-size: 12px;
+}
+
+
+#selectedTime {
+    margin:
+        10px 0 14px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+#timeSlider {
+    width: 100%;
+}
+
+
+.slider-labels {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 4px;
+
+    margin-top: 7px;
+
+    color: #789ab5;
+
     font-size: 10px;
-  }
+
+    text-align: center;
+}
+
+
+.slider-labels span {
+    flex: 1;
+}
+
+
+.track-legend {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 22px;
+
+    margin-top: 14px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.asc-color {
+    color: #4aa3ff;
+}
+
+
+.desc-color {
+    color: #ff9b42;
+}
+
+
+.track-note {
+    margin-top: 8px;
+
+    color: #789ab5;
+
+    text-align: center;
+
+    font-size: 12px;
+}
+
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.timeline-buttons {
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 14px;
+}
+
+
+#nowButton {
+    border: 0;
+
+    border-radius: 9px;
+
+    padding:
+        10px 18px;
+
+    background: #1f6fc5;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: 700;
+}
+
+
+#nowButton:disabled {
+    opacity: 0.5;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (
+    max-width: 600px
+) {
+
+    .title {
+        font-size: 20px;
+    }
+
+
+    #map {
+        height: 62vh;
+
+        min-height: 430px;
+    }
+
+
+    .info-grid {
+        grid-template-columns:
+            96px 1fr;
+    }
+
+
+    #selectedTime {
+        font-size: 19px;
+    }
+
+
+    .slider-labels {
+        font-size: 9px;
+    }
 
 }
 
@@ -400,1634 +440,1974 @@ body {
 <body>
 
 
-<!-- ========================================
+<!-- =======================================================
      HEADER
-     ======================================== -->
+     ======================================================= -->
 
 <div class="header">
 
-  <div class="title">
-    🛰 ORBITAL SATELLITE TRACKER
-  </div>
+    <div class="title">
+        🛰 ORBITAL SATELLITE TRACKER
+    </div>
 
-  <div class="subtitle">
-    NORAD ID / 衛星名から現在位置と軌道を表示
-  </div>
 
-  <div class="search-area">
+    <div class="subtitle">
+        NORAD ID / 衛星名から現在位置と軌道を表示
+    </div>
 
-    <input
-      id="searchInput"
-      type="text"
-      placeholder="例：25544 / ISS"
-      autocomplete="off"
-    >
 
-    <button
-      id="searchButton"
-      type="button"
-    >
-      🔍
-    </button>
+    <div class="search-area">
 
-  </div>
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="例：25544 / ISS"
+            autocomplete="off"
+        >
 
-  <div id="searchStatus">
-    NORAD ID または衛星名を入力
-  </div>
+
+        <button
+            id="searchButton"
+            type="button"
+        >
+            🔍
+        </button>
+
+    </div>
+
+
+    <div id="searchStatus">
+        NORAD ID または衛星名を入力
+    </div>
 
 </div>
 
 
-<!-- ========================================
+<!-- =======================================================
      INFO
-     ======================================== -->
+     ======================================================= -->
 
 <div class="info-card">
 
-  <div id="satName">
-    衛星を検索してください
-  </div>
 
-  <div class="info-grid">
-
-    <div class="label">
-      NORAD
-    </div>
-
-    <div
-      class="value"
-      id="norad"
-    >
-      -
+    <div id="satName">
+        衛星を検索してください
     </div>
 
 
-    <div class="label">
-      表示時刻
+    <div class="info-grid">
+
+
+        <div class="label">
+            NORAD
+        </div>
+
+        <div
+            class="value"
+            id="norad"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            表示時刻
+        </div>
+
+        <div
+            class="value"
+            id="infoTime"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            緯度
+        </div>
+
+        <div
+            class="value"
+            id="latitude"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            経度
+        </div>
+
+        <div
+            class="value"
+            id="longitude"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            高度
+        </div>
+
+        <div
+            class="value"
+            id="altitude"
+        >
+            -
+        </div>
+
+
+        <div class="label">
+            Epoch
+        </div>
+
+        <div
+            class="value"
+            id="epoch"
+        >
+            -
+        </div>
+
     </div>
 
-    <div
-      class="value"
-      id="infoTime"
-    >
-      -
+
+    <div id="direction">
     </div>
-
-
-    <div class="label">
-      緯度
-    </div>
-
-    <div
-      class="value"
-      id="latitude"
-    >
-      -
-    </div>
-
-
-    <div class="label">
-      経度
-    </div>
-
-    <div
-      class="value"
-      id="longitude"
-    >
-      -
-    </div>
-
-
-    <div class="label">
-      高度
-    </div>
-
-    <div
-      class="value"
-      id="altitude"
-    >
-      -
-    </div>
-
-
-    <div class="label">
-      Epoch
-    </div>
-
-    <div
-      class="value"
-      id="epoch"
-    >
-      -
-    </div>
-
-  </div>
-
-
-  <div id="direction">
-  </div>
 
 </div>
 
 
-<!-- ========================================
+<!-- =======================================================
      MAP
-     ======================================== -->
+     ======================================================= -->
 
 <div id="map">
 </div>
 
 
-<!-- ========================================
+<!-- =======================================================
      TIMELINE
-     ======================================== -->
+     ======================================================= -->
 
 <div class="timeline">
 
-  <div class="timeline-title">
-    ⏱ 24時間軌道シミュレーション
-  </div>
 
-  <div class="timeline-note">
-    1時間刻み / 現在から24時間後まで
-  </div>
+    <div class="timeline-title">
+        ⏱ 24時間軌道シミュレーション
+    </div>
 
 
-  <div id="selectedTime">
-    衛星を検索してください
-  </div>
+    <div class="timeline-note">
+        現在から24時間後まで / 10分刻み
+    </div>
 
 
-  <input
-    id="timeSlider"
-    type="range"
-    min="0"
-    max="24"
-    value="0"
-    step="1"
-    disabled
-  >
+    <div id="selectedTime">
+        衛星を検索してください
+    </div>
 
 
-  <div class="slider-labels">
-
-    <span id="label0">
-      現在
-    </span>
-
-    <span id="label6">
-      +6h
-    </span>
-
-    <span id="label12">
-      +12h
-    </span>
-
-    <span id="label18">
-      +18h
-    </span>
-
-    <span id="label24">
-      +24h
-    </span>
-
-  </div>
-
-
-  <div class="track-legend">
-
-    <span class="asc-color">
-      ● 上りパス
-    </span>
-
-    <span class="desc-color">
-      ● 下りパス
-    </span>
-
-  </div>
-
-
-  <div class="track-note">
-    地図の軌道線は選択時刻の前後1時間
-  </div>
-
-
-  <div class="timeline-buttons">
-
-    <button
-      id="nowButton"
-      type="button"
-      disabled
+    <input
+        id="timeSlider"
+        type="range"
+        min="0"
+        max="1440"
+        value="0"
+        step="10"
+        disabled
     >
-      ⏱ 現在時刻へ戻る
-    </button>
 
-  </div>
+
+    <div class="slider-labels">
+
+        <span id="label0">
+            現在
+        </span>
+
+        <span id="label360">
+            +6h
+        </span>
+
+        <span id="label720">
+            +12h
+        </span>
+
+        <span id="label1080">
+            +18h
+        </span>
+
+        <span id="label1440">
+            +24h
+        </span>
+
+    </div>
+
+
+    <div class="track-legend">
+
+        <span class="asc-color">
+            ● 上りパス
+        </span>
+
+        <span class="desc-color">
+            ● 下りパス
+        </span>
+
+    </div>
+
+
+    <div class="track-note">
+        地図の軌道線は選択時刻の前後1時間
+    </div>
+
+
+    <div class="timeline-buttons">
+
+        <button
+            id="nowButton"
+            type="button"
+            disabled
+        >
+            ⏱ 現在時刻へ戻る
+        </button>
+
+    </div>
 
 </div>
 
 
 <script type="module">
 
+
 import * as satellite
 from "https://cdn.jsdelivr.net/npm/satellite.js@7.0.1/+esm";
 
 
-/* ==========================================
+/* =========================================================
    CLOUDFLARE WORKER
-   ========================================== */
+   ========================================================= */
 
 const WORKER =
-  "https://orbital-satellite-proxy.shingo48691014.workers.dev/orbit";
+
+    "https://orbital-satellite-proxy.shingo48691014.workers.dev/orbit";
 
 
-/* ==========================================
+/* =========================================================
    MAP
-   ========================================== */
+   ========================================================= */
 
 const map =
-  L.map(
-    "map",
-    {
-      worldCopyJump: true
-    }
-  )
-  .setView(
-    [
-      20,
-      135
-    ],
-    2
-  );
+
+    L.map(
+        "map",
+        {
+            worldCopyJump:
+                true
+        }
+    )
+
+    .setView(
+        [
+            20,
+            135
+        ],
+        2
+    );
 
 
 L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    maxZoom: 8,
-    attribution: "OpenStreetMap"
-  }
+
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+    {
+
+        maxZoom:
+            8,
+
+        attribution:
+            "OpenStreetMap"
+
+    }
+
 )
+
 .addTo(
-  map
+    map
 );
 
 
-/* ==========================================
+/* =========================================================
    STATE
-   ========================================== */
+   ========================================================= */
 
 let currentSatrec =
-  null;
+    null;
+
 
 let currentOmm =
-  null;
+    null;
+
 
 let baseTime =
-  null;
+    null;
+
 
 let satelliteMarker =
-  null;
+    null;
+
 
 let trackLines =
-  [];
+    [];
 
 
-/* ==========================================
+/* =========================================================
    DOM
-   ========================================== */
+   ========================================================= */
 
 const searchInput =
-  document.getElementById(
-    "searchInput"
-  );
 
-const searchButton =
-  document.getElementById(
-    "searchButton"
-  );
-
-const searchStatus =
-  document.getElementById(
-    "searchStatus"
-  );
-
-const slider =
-  document.getElementById(
-    "timeSlider"
-  );
-
-const nowButton =
-  document.getElementById(
-    "nowButton"
-  );
-
-const selectedTime =
-  document.getElementById(
-    "selectedTime"
-  );
-
-
-/* ==========================================
-   JST
-   ========================================== */
-
-function formatJST(
-  date
-) {
-
-  return new Intl.DateTimeFormat(
-    "ja-JP",
-    {
-      timeZone:
-        "Asia/Tokyo",
-
-      year:
-        "numeric",
-
-      month:
-        "2-digit",
-
-      day:
-        "2-digit",
-
-      hour:
-        "2-digit",
-
-      minute:
-        "2-digit",
-
-      second:
-        "2-digit",
-
-      hour12:
-        false
-    }
-  )
-  .format(
-    date
-  )
-  +
-  " JST";
-
-}
-
-
-/* ==========================================
-   SHORT JST
-   ========================================== */
-
-function formatShortJST(
-  date
-) {
-
-  const parts =
-    new Intl.DateTimeFormat(
-      "ja-JP",
-      {
-        timeZone:
-          "Asia/Tokyo",
-
-        month:
-          "numeric",
-
-        day:
-          "numeric",
-
-        hour:
-          "2-digit",
-
-        minute:
-          "2-digit",
-
-        hour12:
-          false
-      }
-    )
-    .formatToParts(
-      date
+    document.getElementById(
+        "searchInput"
     );
 
 
-  const values =
-    {};
+const searchButton =
+
+    document.getElementById(
+        "searchButton"
+    );
 
 
-  parts.forEach(
-    function(part) {
+const searchStatus =
 
-      if (
-        part.type !==
-        "literal"
-      ) {
-
-        values[
-          part.type
-        ] =
-          part.value;
-
-      }
-
-    }
-  );
+    document.getElementById(
+        "searchStatus"
+    );
 
 
-  return (
-    values.month
+const slider =
+
+    document.getElementById(
+        "timeSlider"
+    );
+
+
+const nowButton =
+
+    document.getElementById(
+        "nowButton"
+    );
+
+
+const selectedTime =
+
+    document.getElementById(
+        "selectedTime"
+    );
+
+
+/* =========================================================
+   JST FORMAT
+   ========================================================= */
+
+function formatJST(
+    date
+) {
+
+
+    return new Intl.DateTimeFormat(
+
+        "ja-JP",
+
+        {
+
+            timeZone:
+                "Asia/Tokyo",
+
+            year:
+                "numeric",
+
+            month:
+                "2-digit",
+
+            day:
+                "2-digit",
+
+            hour:
+                "2-digit",
+
+            minute:
+                "2-digit",
+
+            hour12:
+                false
+
+        }
+
+    )
+
+    .format(
+        date
+    )
+
     +
-    "/"
-    +
-    values.day
-    +
-    " "
-    +
-    values.hour
-    +
-    ":"
-    +
-    values.minute
-  );
+    " JST";
 
 }
 
 
-/* ==========================================
-   TIME FROM SLIDER
-   ========================================== */
+/* =========================================================
+   SHORT JST
+   ========================================================= */
+
+function formatShortJST(
+    date
+) {
+
+
+    const parts =
+
+        new Intl.DateTimeFormat(
+
+            "ja-JP",
+
+            {
+
+                timeZone:
+                    "Asia/Tokyo",
+
+                month:
+                    "numeric",
+
+                day:
+                    "numeric",
+
+                hour:
+                    "2-digit",
+
+                minute:
+                    "2-digit",
+
+                hour12:
+                    false
+
+            }
+
+        )
+
+        .formatToParts(
+            date
+        );
+
+
+    const values =
+        {};
+
+
+    parts.forEach(
+
+        function(
+            part
+        ) {
+
+
+            if (
+                part.type !==
+                "literal"
+            ) {
+
+
+                values[
+                    part.type
+                ] =
+                    part.value;
+
+            }
+
+        }
+
+    );
+
+
+    return (
+
+        values.month
+        +
+        "/"
+        +
+        values.day
+        +
+        " "
+        +
+        values.hour
+        +
+        ":"
+        +
+        values.minute
+
+    );
+
+}
+
+
+/* =========================================================
+   SELECTED DATE
+   ========================================================= */
 
 function getSelectedDate() {
 
-  if (
-    !baseTime
-  ) {
 
-    return null;
+    if (
+        !baseTime
+    ) {
 
-  }
+        return null;
+
+    }
 
 
-  const hours =
-    Number(
-      slider.value
+    const minutes =
+
+        Number(
+            slider.value
+        );
+
+
+    return new Date(
+
+        baseTime.getTime()
+        +
+        minutes
+        *
+        60000
+
     );
-
-
-  return new Date(
-
-    baseTime.getTime()
-    +
-    hours
-    *
-    60
-    *
-    60
-    *
-    1000
-
-  );
 
 }
 
 
-/* ==========================================
+/* =========================================================
    TIMELINE LABELS
-   ========================================== */
+   ========================================================= */
 
 function updateTimelineLabels() {
 
-  if (
-    !baseTime
-  ) {
 
-    return;
+    if (
+        !baseTime
+    ) {
 
-  }
+        return;
 
-
-  const hours =
-    [
-      0,
-      6,
-      12,
-      18,
-      24
-    ];
+    }
 
 
-  hours.forEach(
-    function(hour) {
+    const minutePoints =
 
-      const date =
-        new Date(
+        [
+            0,
+            360,
+            720,
+            1080,
+            1440
+        ];
 
-          baseTime.getTime()
-          +
-          hour
-          *
-          60
-          *
-          60
-          *
-          1000
+
+    minutePoints.forEach(
+
+        function(
+            minutes
+        ) {
+
+
+            const date =
+
+                new Date(
+
+                    baseTime.getTime()
+                    +
+                    minutes
+                    *
+                    60000
+
+                );
+
+
+            document
+                .getElementById(
+                    "label"
+                    +
+                    minutes
+                )
+                .textContent =
+
+                    formatShortJST(
+                        date
+                    );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================================
+   POSITION
+   ========================================================= */
+
+function positionAt(
+    date
+) {
+
+
+    if (
+        !currentSatrec
+    ) {
+
+        return null;
+
+    }
+
+
+    const result =
+
+        satellite.propagate(
+
+            currentSatrec,
+
+            date
 
         );
 
 
-      document
-        .getElementById(
-          "label"
-          +
-          hour
-        )
-        .textContent =
-          formatShortJST(
-            date
-          );
+    if (
+        !result
+        ||
+        !result.position
+    ) {
+
+        return null;
 
     }
-  );
+
+
+    const gmst =
+
+        satellite.gstime(
+            date
+        );
+
+
+    const geodetic =
+
+        satellite.eciToGeodetic(
+
+            result.position,
+
+            gmst
+
+        );
+
+
+    return {
+
+        lat:
+
+            satellite.degreesLat(
+                geodetic.latitude
+            ),
+
+
+        lon:
+
+            satellite.degreesLong(
+                geodetic.longitude
+            ),
+
+
+        alt:
+
+            geodetic.height
+
+    };
 
 }
 
 
-/* ==========================================
-   POSITION
-   ========================================== */
-
-function positionAt(
-  date
-) {
-
-  if (
-    !currentSatrec
-  ) {
-
-    return null;
-
-  }
-
-
-  const result =
-    satellite.propagate(
-
-      currentSatrec,
-
-      date
-
-    );
-
-
-  if (
-    !result
-    ||
-    !result.position
-  ) {
-
-    return null;
-
-  }
-
-
-  const gmst =
-    satellite.gstime(
-      date
-    );
-
-
-  const geodetic =
-    satellite.eciToGeodetic(
-
-      result.position,
-
-      gmst
-
-    );
-
-
-  return {
-
-    lat:
-      satellite.degreesLat(
-        geodetic.latitude
-      ),
-
-    lon:
-      satellite.degreesLong(
-        geodetic.longitude
-      ),
-
-    alt:
-      geodetic.height
-
-  };
-
-}
-
-
-/* ==========================================
+/* =========================================================
    ASCENDING / DESCENDING
-   ========================================== */
+   ========================================================= */
 
 function directionAt(
-  date
+    date
 ) {
 
-  const before =
-    positionAt(
 
-      new Date(
+    const before =
 
-        date.getTime()
-        -
-        10000
+        positionAt(
 
-      )
+            new Date(
 
-    );
+                date.getTime()
+                -
+                10000
 
+            )
 
-  const after =
-    positionAt(
+        );
 
-      new Date(
 
-        date.getTime()
-        +
-        10000
+    const after =
 
-      )
+        positionAt(
 
-    );
+            new Date(
 
+                date.getTime()
+                +
+                10000
 
-  if (
-    !before
-    ||
-    !after
-  ) {
+            )
 
-    return null;
-
-  }
-
-
-  if (
-    after.lat
-    >
-    before.lat
-  ) {
-
-    return "ascending";
-
-  }
-
-
-  return "descending";
-
-}
-
-
-/* ==========================================
-   UPDATE MARKER
-   ========================================== */
-
-function updateMarker(
-  date
-) {
-
-  const position =
-    positionAt(
-      date
-    );
-
-
-  if (
-    !position
-  ) {
-
-    searchStatus.classList.add(
-      "error"
-    );
-
-    searchStatus.textContent =
-      "❌ 軌道計算に失敗しました";
-
-    return;
-
-  }
-
-
-  const direction =
-    directionAt(
-      date
-    );
-
-
-  const markerColor =
-
-    direction ===
-    "ascending"
-
-      ? "#278cff"
-
-      : "#ff8a22";
-
-
-  if (
-    !satelliteMarker
-  ) {
-
-    satelliteMarker =
-      L.circleMarker(
-        [
-          position.lat,
-          position.lon
-        ],
-        {
-          radius: 10,
-
-          color: "#ffffff",
-
-          weight: 2,
-
-          fillColor:
-            markerColor,
-
-          fillOpacity: 1
-        }
-      )
-      .addTo(
-        map
-      );
-
-  }
-
-  else {
-
-    satelliteMarker.setLatLng(
-      [
-        position.lat,
-        position.lon
-      ]
-    );
-
-
-    satelliteMarker.setStyle(
-      {
-        fillColor:
-          markerColor
-      }
-    );
-
-  }
-
-
-  satelliteMarker.bindPopup(
-
-    "<b>"
-    +
-    (
-      currentOmm?.OBJECT_NAME
-      ||
-      "SATELLITE"
-    )
-    +
-    "</b><br>"
-    +
-    "NORAD："
-    +
-    (
-      currentOmm?.NORAD_CAT_ID
-      ??
-      "-"
-    )
-    +
-    "<br>"
-    +
-    "時刻："
-    +
-    formatJST(
-      date
-    )
-    +
-    "<br>"
-    +
-    "緯度："
-    +
-    position.lat.toFixed(
-      4
-    )
-    +
-    "°<br>"
-    +
-    "経度："
-    +
-    position.lon.toFixed(
-      4
-    )
-    +
-    "°<br>"
-    +
-    "高度："
-    +
-    position.alt.toFixed(
-      1
-    )
-    +
-    " km<br>"
-    +
-    (
-      direction ===
-      "ascending"
-
-        ? "🔵 上りパス"
-
-        : "🟠 下りパス"
-    )
-
-  );
-
-
-  document
-    .getElementById(
-      "infoTime"
-    )
-    .textContent =
-      formatJST(
-        date
-      );
-
-
-  document
-    .getElementById(
-      "latitude"
-    )
-    .textContent =
-
-      position.lat.toFixed(
-        4
-      )
-      +
-      "°";
-
-
-  document
-    .getElementById(
-      "longitude"
-    )
-    .textContent =
-
-      position.lon.toFixed(
-        4
-      )
-      +
-      "°";
-
-
-  document
-    .getElementById(
-      "altitude"
-    )
-    .textContent =
-
-      position.alt.toFixed(
-        1
-      )
-      +
-      " km";
-
-
-  selectedTime.textContent =
-    formatJST(
-      date
-    );
-
-
-  const directionBox =
-    document.getElementById(
-      "direction"
-    );
-
-
-  directionBox.style.display =
-    "inline-block";
-
-
-  if (
-    direction ===
-    "ascending"
-  ) {
-
-    directionBox.className =
-      "ascending";
-
-
-    directionBox.textContent =
-      "🔵 上りパス";
-
-  }
-
-  else {
-
-    directionBox.className =
-      "descending";
-
-
-    directionBox.textContent =
-      "🟠 下りパス";
-
-  }
-
-}
-
-
-/* ==========================================
-   CLEAR TRACK
-   ========================================== */
-
-function clearTrack() {
-
-  trackLines.forEach(
-    function(line) {
-
-      map.removeLayer(
-        line
-      );
-
-    }
-  );
-
-
-  trackLines =
-    [];
-
-}
-
-
-/* ==========================================
-   DRAW TRACK
-
-   選択時刻の前後60分
-   2分間隔
-   ========================================== */
-
-function drawTrack(
-  centerDate
-) {
-
-  clearTrack();
-
-
-  if (
-    !currentSatrec
-    ||
-    !centerDate
-  ) {
-
-    return;
-
-  }
-
-
-  let previous =
-    null;
-
-
-  for (
-
-    let minute = -60;
-
-    minute <= 60;
-
-    minute += 2
-
-  ) {
-
-
-    const date =
-      new Date(
-
-        centerDate.getTime()
-        +
-        minute
-        *
-        60000
-
-      );
-
-
-    const position =
-      positionAt(
-        date
-      );
+        );
 
 
     if (
-      !position
+        !before
+        ||
+        !after
     ) {
 
-      previous =
-        null;
+        return null;
 
-      continue;
+    }
+
+
+    if (
+        after.lat
+        >
+        before.lat
+    ) {
+
+        return "ascending";
+
+    }
+
+
+    return "descending";
+
+}
+
+
+/* =========================================================
+   UPDATE MARKER
+   ========================================================= */
+
+function updateMarker(
+    date
+) {
+
+
+    const position =
+
+        positionAt(
+            date
+        );
+
+
+    if (
+        !position
+    ) {
+
+
+        searchStatus
+            .classList
+            .add(
+                "error"
+            );
+
+
+        searchStatus.textContent =
+
+            "❌ 軌道計算に失敗しました";
+
+
+        return;
 
     }
 
 
     const direction =
-      directionAt(
-        date
-      );
 
-
-    if (
-      previous
-    ) {
-
-
-      const lonDifference =
-        Math.abs(
-
-          position.lon
-          -
-          previous.lon
-
+        directionAt(
+            date
         );
 
 
-      if (
-        lonDifference
-        <
-        180
-      ) {
+    const markerColor =
 
+        direction ===
+        "ascending"
 
-        const line =
-          L.polyline(
-            [
-              [
-                previous.lat,
-                previous.lon
-              ],
+            ? "#278cff"
 
-              [
-                position.lat,
-                position.lon
-              ]
-            ],
-            {
-              color:
-
-                direction ===
-                "ascending"
-
-                  ? "#278cff"
-
-                  : "#ff8a22",
-
-              weight: 3,
-
-              opacity: 0.85
-            }
-          )
-          .addTo(
-            map
-          );
-
-
-        trackLines.push(
-          line
-        );
-
-      }
-
-    }
-
-
-    previous =
-      position;
-
-  }
-
-}
-
-
-/* ==========================================
-   NORMALIZE NAME
-   ========================================== */
-
-function normalizeName(
-  value
-) {
-
-  return String(
-    value || ""
-  )
-  .toUpperCase()
-  .replace(
-    /[^A-Z0-9]/g,
-    ""
-  );
-
-}
-
-
-/* ==========================================
-   UPDATE DISPLAY FOR SLIDER
-   ========================================== */
-
-function updateSelectedTime() {
-
-  const date =
-    getSelectedDate();
-
-
-  if (
-    !date
-  ) {
-
-    return;
-
-  }
-
-
-  updateMarker(
-    date
-  );
-
-
-  drawTrack(
-    date
-  );
-
-}
-
-
-/* ==========================================
-   SEARCH
-   ========================================== */
-
-async function searchSatellite() {
-
-  const query =
-    searchInput
-      .value
-      .trim();
-
-
-  if (
-    !query
-  ) {
-
-    searchStatus.textContent =
-      "衛星名かNORAD IDを入力してください";
-
-    return;
-
-  }
-
-
-  searchStatus.classList.remove(
-    "error"
-  );
-
-
-  searchStatus.textContent =
-    "🔄 衛星データを取得中…";
-
-
-  searchButton.disabled =
-    true;
-
-
-  try {
-
-
-    const numeric =
-      /^[0-9]{1,9}$/.test(
-        query
-      );
-
-
-    const url =
-
-      numeric
-
-        ? WORKER
-          +
-          "?catnr="
-          +
-          encodeURIComponent(
-            query
-          )
-
-        : WORKER
-          +
-          "?name="
-          +
-          encodeURIComponent(
-            query
-          );
-
-
-    const response =
-      await fetch(
-        url,
-        {
-          cache:
-            "no-store"
-        }
-      );
+            : "#ff8a22";
 
 
     if (
-      !response.ok
+        !satelliteMarker
     ) {
 
-      throw new Error(
-        "HTTP "
-        +
-        response.status
-      );
 
-    }
+        satelliteMarker =
 
+            L.circleMarker(
 
-    const data =
-      await response.json();
+                [
 
+                    position.lat,
 
-    if (
-      !Array.isArray(
-        data
-      )
-      ||
-      data.length ===
-      0
-    ) {
+                    position.lon
 
-      throw new Error(
-        "該当衛星なし"
-      );
+                ],
 
-    }
+                {
 
+                    radius:
+                        10,
 
-    let omm =
-      data[0];
+                    color:
+                        "#ffffff",
 
+                    weight:
+                        2,
 
-    if (
-      !numeric
-    ) {
+                    fillColor:
+                        markerColor,
 
-      const normalizedQuery =
-        normalizeName(
-          query
-        );
+                    fillOpacity:
+                        1
 
+                }
 
-      const exact =
-        data.find(
-          function(item) {
+            )
 
-            return (
-
-              normalizeName(
-                item.OBJECT_NAME
-              )
-
-              ===
-
-              normalizedQuery
-
+            .addTo(
+                map
             );
 
-          }
-        );
-
-
-      if (
-        exact
-      ) {
-
-        omm =
-          exact;
-
-      }
-
     }
 
-
-    currentOmm =
-      omm;
-
-
-    currentSatrec =
-      satellite.json2satrec(
-        omm
-      );
-
-
-    if (
-      !currentSatrec
-    ) {
-
-      throw new Error(
-        "OMM変換失敗"
-      );
-
-    }
-
-
-    baseTime =
-      new Date();
-
-
-    slider.value =
-      "0";
-
-
-    slider.disabled =
-      false;
-
-
-    nowButton.disabled =
-      false;
-
-
-    document
-      .getElementById(
-        "satName"
-      )
-      .textContent =
-
-        omm.OBJECT_NAME
-        ||
-        "UNKNOWN";
-
-
-    document
-      .getElementById(
-        "norad"
-      )
-      .textContent =
-
-        String(
-
-          omm.NORAD_CAT_ID
-          ??
-          "-"
-
-        );
-
-
-    document
-      .getElementById(
-        "epoch"
-      )
-      .textContent =
-
-        omm.EPOCH
-        ||
-        "-";
-
-
-    updateTimelineLabels();
-
-
-    const currentDate =
-      getSelectedDate();
-
-
-    drawTrack(
-      currentDate
-    );
-
-
-    updateMarker(
-      currentDate
-    );
-
-
-    const currentPosition =
-      positionAt(
-        currentDate
-      );
-
-
-    if (
-      currentPosition
-    ) {
-
-      map.setView(
-        [
-          currentPosition.lat,
-          currentPosition.lon
-        ],
-        4,
-        {
-          animate: true
-        }
-      );
-
-    }
-
-
-    if (
-      data.length
-      >
-      1
-    ) {
-
-      searchStatus.textContent =
-
-        "✅ "
-        +
-        omm.OBJECT_NAME
-        +
-        " / NORAD "
-        +
-        omm.NORAD_CAT_ID
-        +
-        "（候補 "
-        +
-        data.length
-        +
-        "件）";
-
-    }
 
     else {
 
-      searchStatus.textContent =
 
-        "✅ "
-        +
-        omm.OBJECT_NAME
-        +
-        " / NORAD "
-        +
-        omm.NORAD_CAT_ID;
+        satelliteMarker.setLatLng(
+
+            [
+
+                position.lat,
+
+                position.lon
+
+            ]
+
+        );
+
+
+        satelliteMarker.setStyle(
+
+            {
+
+                fillColor:
+                    markerColor
+
+            }
+
+        );
 
     }
 
-  }
 
+    satelliteMarker.bindPopup(
 
-  catch (
-    error
-  ) {
+        "<b>"
+        +
+        (
+            currentOmm?.OBJECT_NAME
+            ||
+            "SATELLITE"
+        )
+        +
+        "</b><br>"
+        +
+        "NORAD："
+        +
+        (
+            currentOmm?.NORAD_CAT_ID
+            ??
+            "-"
+        )
+        +
+        "<br>"
+        +
+        "時刻："
+        +
+        formatJST(
+            date
+        )
+        +
+        "<br>"
+        +
+        "緯度："
+        +
+        position.lat.toFixed(
+            4
+        )
+        +
+        "°<br>"
+        +
+        "経度："
+        +
+        position.lon.toFixed(
+            4
+        )
+        +
+        "°<br>"
+        +
+        "高度："
+        +
+        position.alt.toFixed(
+            1
+        )
+        +
+        " km<br>"
+        +
+        (
+            direction ===
+            "ascending"
 
-    console.error(
-      error
+                ? "🔵 上りパス"
+
+                : "🟠 下りパス"
+        )
+
     );
 
 
-    searchStatus.classList.add(
-      "error"
-    );
+    document
+        .getElementById(
+            "infoTime"
+        )
+        .textContent =
+
+            formatJST(
+                date
+            );
 
 
-    searchStatus.textContent =
-      "❌ 衛星データを取得できませんでした";
+    document
+        .getElementById(
+            "latitude"
+        )
+        .textContent =
 
-  }
+            position.lat.toFixed(
+                4
+            )
+            +
+            "°";
 
 
-  finally {
+    document
+        .getElementById(
+            "longitude"
+        )
+        .textContent =
 
-    searchButton.disabled =
-      false;
+            position.lon.toFixed(
+                4
+            )
+            +
+            "°";
 
-  }
+
+    document
+        .getElementById(
+            "altitude"
+        )
+        .textContent =
+
+            position.alt.toFixed(
+                1
+            )
+            +
+            " km";
+
+
+    selectedTime.textContent =
+
+        formatJST(
+            date
+        );
+
+
+    const directionBox =
+
+        document.getElementById(
+            "direction"
+        );
+
+
+    directionBox.style.display =
+
+        "inline-block";
+
+
+    if (
+        direction ===
+        "ascending"
+    ) {
+
+
+        directionBox.className =
+
+            "ascending";
+
+
+        directionBox.textContent =
+
+            "🔵 上りパス";
+
+    }
+
+
+    else {
+
+
+        directionBox.className =
+
+            "descending";
+
+
+        directionBox.textContent =
+
+            "🟠 下りパス";
+
+    }
 
 }
 
 
-/* ==========================================
-   SLIDER
-   ========================================== */
+/* =========================================================
+   CLEAR TRACK
+   ========================================================= */
 
-slider.addEventListener(
-  "input",
-  function() {
-
-    updateSelectedTime();
-
-  }
-);
+function clearTrack() {
 
 
-/* ==========================================
-   CURRENT TIME BUTTON
-   ========================================== */
+    trackLines.forEach(
 
-nowButton.addEventListener(
-  "click",
-  function() {
+        function(
+            line
+        ) {
+
+
+            map.removeLayer(
+                line
+            );
+
+        }
+
+    );
+
+
+    trackLines =
+        [];
+
+}
+
+
+/* =========================================================
+   DRAW TRACK
+
+   選択時刻の前後60分
+   2分間隔
+   ========================================================= */
+
+function drawTrack(
+    centerDate
+) {
+
+
+    clearTrack();
+
 
     if (
-      !currentSatrec
+        !currentSatrec
+        ||
+        !centerDate
     ) {
 
-      return;
+        return;
 
     }
 
 
-    baseTime =
-      new Date();
+    let previous =
+        null;
 
 
-    slider.value =
-      "0";
+    for (
+
+        let minute = -60;
+
+        minute <= 60;
+
+        minute += 2
+
+    ) {
 
 
-    updateTimelineLabels();
+        const date =
+
+            new Date(
+
+                centerDate.getTime()
+                +
+                minute
+                *
+                60000
+
+            );
+
+
+        const position =
+
+            positionAt(
+                date
+            );
+
+
+        if (
+            !position
+        ) {
+
+
+            previous =
+                null;
+
+
+            continue;
+
+        }
+
+
+        const direction =
+
+            directionAt(
+                date
+            );
+
+
+        if (
+            previous
+        ) {
+
+
+            const lonDifference =
+
+                Math.abs(
+
+                    position.lon
+                    -
+                    previous.lon
+
+                );
+
+
+            if (
+                lonDifference
+                <
+                180
+            ) {
+
+
+                const line =
+
+                    L.polyline(
+
+                        [
+
+                            [
+
+                                previous.lat,
+
+                                previous.lon
+
+                            ],
+
+
+                            [
+
+                                position.lat,
+
+                                position.lon
+
+                            ]
+
+                        ],
+
+                        {
+
+                            color:
+
+                                direction ===
+                                "ascending"
+
+                                    ? "#278cff"
+
+                                    : "#ff8a22",
+
+                            weight:
+                                3,
+
+                            opacity:
+                                0.85
+
+                        }
+
+                    )
+
+                    .addTo(
+                        map
+                    );
+
+
+                trackLines.push(
+                    line
+                );
+
+            }
+
+        }
+
+
+        previous =
+            position;
+
+    }
+
+}
+
+
+/* =========================================================
+   NORMALIZE NAME
+   ========================================================= */
+
+function normalizeName(
+    value
+) {
+
+
+    return String(
+        value || ""
+    )
+
+    .toUpperCase()
+
+    .replace(
+
+        /[^A-Z0-9]/g,
+
+        ""
+
+    );
+
+}
+
+
+/* =========================================================
+   UPDATE SELECTED TIME
+   ========================================================= */
+
+function updateSelectedTime(
+    redrawTrack = false
+) {
 
 
     const date =
-      getSelectedDate();
+
+        getSelectedDate();
 
 
-    drawTrack(
-      date
-    );
+    if (
+        !date
+    ) {
+
+        return;
+
+    }
 
 
     updateMarker(
-      date
+        date
     );
 
 
     const position =
-      positionAt(
-        date
-      );
+
+        positionAt(
+            date
+        );
 
 
     if (
-      position
+        position
     ) {
 
-      map.setView(
-        [
-          position.lat,
-          position.lon
-        ],
-        4,
-        {
-          animate: true
-        }
-      );
+
+        map.panTo(
+
+            [
+
+                position.lat,
+
+                position.lon
+
+            ],
+
+            {
+
+                animate:
+                    true
+
+            }
+
+        );
 
     }
 
-  }
+
+    if (
+        redrawTrack
+    ) {
+
+
+        drawTrack(
+            date
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+async function searchSatellite() {
+
+
+    const query =
+
+        searchInput
+            .value
+            .trim();
+
+
+    if (
+        !query
+    ) {
+
+
+        searchStatus.textContent =
+
+            "衛星名かNORAD IDを入力してください";
+
+
+        return;
+
+    }
+
+
+    searchStatus
+        .classList
+        .remove(
+            "error"
+        );
+
+
+    searchStatus.textContent =
+
+        "🔄 衛星データを取得中…";
+
+
+    searchButton.disabled =
+
+        true;
+
+
+    try {
+
+
+        const numeric =
+
+            /^[0-9]{1,9}$/.test(
+                query
+            );
+
+
+        const url =
+
+            numeric
+
+                ? WORKER
+                    +
+                    "?catnr="
+                    +
+                    encodeURIComponent(
+                        query
+                    )
+
+                : WORKER
+                    +
+                    "?name="
+                    +
+                    encodeURIComponent(
+                        query
+                    );
+
+
+        const response =
+
+            await fetch(
+
+                url,
+
+                {
+
+                    cache:
+                        "no-store"
+
+                }
+
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+
+            throw new Error(
+
+                "HTTP "
+                +
+                response.status
+
+            );
+
+        }
+
+
+        const data =
+
+            await response.json();
+
+
+        if (
+            !Array.isArray(
+                data
+            )
+            ||
+            data.length ===
+            0
+        ) {
+
+
+            throw new Error(
+                "該当衛星なし"
+            );
+
+        }
+
+
+        let omm =
+
+            data[0];
+
+
+        if (
+            !numeric
+        ) {
+
+
+            const normalizedQuery =
+
+                normalizeName(
+                    query
+                );
+
+
+            const exact =
+
+                data.find(
+
+                    function(
+                        item
+                    ) {
+
+
+                        return (
+
+                            normalizeName(
+                                item.OBJECT_NAME
+                            )
+
+                            ===
+
+                            normalizedQuery
+
+                        );
+
+                    }
+
+                );
+
+
+            if (
+                exact
+            ) {
+
+
+                omm =
+                    exact;
+
+            }
+
+        }
+
+
+        currentOmm =
+
+            omm;
+
+
+        currentSatrec =
+
+            satellite.json2satrec(
+                omm
+            );
+
+
+        if (
+            !currentSatrec
+        ) {
+
+
+            throw new Error(
+                "OMM変換失敗"
+            );
+
+        }
+
+
+        /*
+         * 現在時刻を基準
+         * 秒・ミリ秒は0にする
+         */
+        baseTime =
+
+            new Date();
+
+
+        baseTime.setSeconds(
+            0,
+            0
+        );
+
+
+        slider.value =
+
+            "0";
+
+
+        slider.disabled =
+
+            false;
+
+
+        nowButton.disabled =
+
+            false;
+
+
+        document
+            .getElementById(
+                "satName"
+            )
+            .textContent =
+
+                omm.OBJECT_NAME
+                ||
+                "UNKNOWN";
+
+
+        document
+            .getElementById(
+                "norad"
+            )
+            .textContent =
+
+                String(
+
+                    omm.NORAD_CAT_ID
+                    ??
+                    "-"
+
+                );
+
+
+        document
+            .getElementById(
+                "epoch"
+            )
+            .textContent =
+
+                omm.EPOCH
+                ||
+                "-";
+
+
+        updateTimelineLabels();
+
+
+        const currentDate =
+
+            getSelectedDate();
+
+
+        drawTrack(
+            currentDate
+        );
+
+
+        updateMarker(
+            currentDate
+        );
+
+
+        const currentPosition =
+
+            positionAt(
+                currentDate
+            );
+
+
+        if (
+            currentPosition
+        ) {
+
+
+            map.setView(
+
+                [
+
+                    currentPosition.lat,
+
+                    currentPosition.lon
+
+                ],
+
+                4,
+
+                {
+
+                    animate:
+                        true
+
+                }
+
+            );
+
+        }
+
+
+        if (
+            data.length
+            >
+            1
+        ) {
+
+
+            searchStatus.textContent =
+
+                "✅ "
+                +
+                omm.OBJECT_NAME
+                +
+                " / NORAD "
+                +
+                omm.NORAD_CAT_ID
+                +
+                "（候補 "
+                +
+                data.length
+                +
+                "件）";
+
+        }
+
+
+        else {
+
+
+            searchStatus.textContent =
+
+                "✅ "
+                +
+                omm.OBJECT_NAME
+                +
+                " / NORAD "
+                +
+                omm.NORAD_CAT_ID;
+
+        }
+
+    }
+
+
+    catch (
+        error
+    ) {
+
+
+        console.error(
+            error
+        );
+
+
+        searchStatus
+            .classList
+            .add(
+                "error"
+            );
+
+
+        searchStatus.textContent =
+
+            "❌ 衛星データを取得できませんでした";
+
+    }
+
+
+    finally {
+
+
+        searchButton.disabled =
+
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   SLIDER
+
+   動かしている間：
+   衛星位置だけ更新
+
+   指を離した時：
+   軌道線も更新
+
+   iPhone負荷軽減
+   ========================================================= */
+
+slider.addEventListener(
+
+    "input",
+
+    function() {
+
+
+        updateSelectedTime(
+            false
+        );
+
+    }
+
 );
 
 
-/* ==========================================
+slider.addEventListener(
+
+    "change",
+
+    function() {
+
+
+        updateSelectedTime(
+            true
+        );
+
+    }
+
+);
+
+
+/* =========================================================
+   NOW BUTTON
+   ========================================================= */
+
+nowButton.addEventListener(
+
+    "click",
+
+    function() {
+
+
+        if (
+            !currentSatrec
+        ) {
+
+            return;
+
+        }
+
+
+        baseTime =
+
+            new Date();
+
+
+        baseTime.setSeconds(
+            0,
+            0
+        );
+
+
+        slider.value =
+
+            "0";
+
+
+        updateTimelineLabels();
+
+
+        const date =
+
+            getSelectedDate();
+
+
+        drawTrack(
+            date
+        );
+
+
+        updateMarker(
+            date
+        );
+
+
+        const position =
+
+            positionAt(
+                date
+            );
+
+
+        if (
+            position
+        ) {
+
+
+            map.setView(
+
+                [
+
+                    position.lat,
+
+                    position.lon
+
+                ],
+
+                4,
+
+                {
+
+                    animate:
+                        true
+
+                }
+
+            );
+
+        }
+
+    }
+
+);
+
+
+/* =========================================================
    SEARCH BUTTON
-   ========================================== */
+   ========================================================= */
 
 searchButton.addEventListener(
-  "click",
-  searchSatellite
+
+    "click",
+
+    searchSatellite
+
 );
 
 
-/* ==========================================
+/* =========================================================
    ENTER SEARCH
-   ========================================== */
+   ========================================================= */
 
 searchInput.addEventListener(
-  "keydown",
-  function(event) {
 
-    if (
-      event.key ===
-      "Enter"
+    "keydown",
+
+    function(
+        event
     ) {
 
-      event.preventDefault();
 
-      searchSatellite();
+        if (
+            event.key ===
+            "Enter"
+        ) {
+
+
+            event.preventDefault();
+
+
+            searchSatellite();
+
+        }
 
     }
 
-  }
 );
 
 
-/* ==========================================
-   INITIAL VALUE
-   ========================================== */
+/* =========================================================
+   INITIAL
+   ========================================================= */
 
 searchInput.value =
-  "25544";
+
+    "25544";
+
 
 </script>
 
