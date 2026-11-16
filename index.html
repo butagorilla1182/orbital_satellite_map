@@ -2565,128 +2565,117 @@ async function fetchGpData(
 ) {
 
     const numeric =
+        /^[0-9]{1,9}$/.test(query);
 
-        /^[0-9]{1,9}$/.test(
-            query
-        );
-
-
-    let url;
-
+    const q =
+        encodeURIComponent(query);
 
     /*
-     * 100000以上は旧TLEを通さず
-     * CelesTrak JSONを直接取得
+     * 取得先の候補（上から順に試す）
+     * - 100000以上：CelesTrak直接のみ
+     * - 5桁まで：Worker → だめならCelesTrak直接
+     * - 名前：CelesTrak直接（NAME検索） → だめならWorker
      */
-    if (
-        numeric
-        &&
-        Number(
-            query
-        )
-        >= 100000
-    ) {
+    const urls = [];
 
-        url =
-
-            CELESTRAK_GP
-            +
-            "?CATNR="
-            +
-            encodeURIComponent(
-                query
-            )
-            +
-            "&FORMAT=JSON";
-
+    if (numeric && Number(query) >= 100000) {
+        urls.push(CELESTRAK_GP + "?CATNR=" + q + "&FORMAT=JSON");
     }
-
-
-    else if (
-        numeric
-    ) {
-
-        url =
-
-            WORKER
-            +
-            "?catnr="
-            +
-            encodeURIComponent(
-                query
-            );
-
+    else if (numeric) {
+        urls.push(WORKER + "?catnr=" + q);
+        urls.push(CELESTRAK_GP + "?CATNR=" + q + "&FORMAT=JSON");
     }
-
-
     else {
-
-        url =
-
-            WORKER
-            +
-            "?name="
-            +
-            encodeURIComponent(
-                query
-            );
-
+        /* 名前はWorkerが522（タイムアウト）になりやすいので、CelesTrak直接を先に試す */
+        urls.push(CELESTRAK_GP + "?NAME=" + q + "&FORMAT=JSON");
+        urls.push(WORKER + "?name=" + q);
     }
 
+    let lastError =
+        new Error("該当衛星なし");
 
-    const response =
+    for (const url of urls) {
 
-        await fetch(
+        try {
 
-            url,
+            const data =
+                await fetchJsonWithTimeout(url, FETCH_TIMEOUT_MS);
 
-            {
-
-                cache:
-                    "no-store"
-
+            if (Array.isArray(data) && data.length > 0) {
+                return data;
             }
 
-        );
+            lastError =
+                new Error("該当衛星なし");
 
+        }
+        catch (error) {
 
-    if (
-        !response.ok
-    ) {
+            console.warn("取得失敗 → 次の取得先を試します:", url, error);
+            lastError = error;
 
-        throw new Error(
-
-            "HTTP "
-            +
-            response.status
-
-        );
+        }
 
     }
 
+    throw lastError;
 
-    const data =
-
-        await response.json();
+}
 
 
-    if (
-        !Array.isArray(
-            data
-        )
-        ||
-        data.length ===
-        0
-    ) {
+/* 一定時間で打ち切るfetch（Workerが522で長く固まるのを防ぐ） */
+const FETCH_TIMEOUT_MS =
+    10000;
 
-        throw new Error(
-            "該当衛星なし"
-        );
+async function fetchJsonWithTimeout(
+    url,
+    ms
+) {
+
+    const controller =
+        new AbortController();
+
+    const timer =
+        setTimeout(function () { controller.abort(); }, ms);
+
+    try {
+
+        const response =
+            await fetch(url, { cache: "no-store", signal: controller.signal });
+
+        if (response.status === 404) {
+            throw new Error("該当衛星なし");
+        }
+
+        if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+        }
+
+        /* CelesTrakは該当なしの時にJSONでなく文字列を返すことがある */
+        const text =
+            await response.text();
+
+        try {
+            return JSON.parse(text);
+        }
+        catch (e) {
+            throw new Error("該当衛星なし");
+        }
 
     }
+    catch (error) {
 
+        if (error.name === "AbortError") {
+            throw new Error("タイムアウト（" + Math.round(ms / 1000) + "秒）");
+        }
+        throw error;
 
-    return data;
+    }
+    finally {
+
+        clearTimeout(timer);
+
+    }
 
 }
 
@@ -3087,7 +3076,9 @@ async function searchSatellite() {
 
         searchStatus.textContent =
 
-            "❌ 衛星データを取得できませんでした";
+            "❌ 衛星データを取得できませんでした（"
+            + error.message
+            + "）。名前で見つからない時はNORAD IDで試してください";
 
     }
 
@@ -3275,9 +3266,8 @@ searchInput.addEventListener(
    INITIAL
    ========================================================= */
 
-searchInput.value =
-
-    "25544";
+/* 初期値は入れない（placeholderで例を表示）。
+   以前は "25544" が入っていて、続けて入力すると「25544ISS」のようになっていた */
 
 
 </script>
