@@ -2612,7 +2612,11 @@ async function fetchGpData(
         catch (error) {
 
             console.warn("取得失敗 → 次の取得先を試します:", url, error);
-            lastError = error;
+
+            /* 「該当衛星なし」が分かっている時は、あとのタイムアウトで上書きしない */
+            if (lastError.message !== "該当衛星なし" || urls.indexOf(url) === 0) {
+                lastError = error;
+            }
 
         }
 
